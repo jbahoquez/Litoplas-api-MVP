@@ -7,7 +7,7 @@ export class CreateUserDto {
   @IsEmail()
   email: string;
   @IsNumberString()
-  phone: number;
+  phone: string;
   @IsString()
   role: USER_ROLE;
 }

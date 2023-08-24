@@ -1,48 +1,56 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable,NotFoundException } from '@nestjs/common';
 import { User, USER_ROLE } from './entity/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { v4 as idGenerator } from 'uuid';
 import { StringifyOptions } from 'querystring';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+
 @Injectable()
 export class UserService {
-  users: User[] = [
-    {
-      id: '123456',
-      name: 'Jaime',
-      email: 'jaime@mail.com',
-      phone: 3001234567,
-      role: USER_ROLE.ADMIN,
-    },
-  ];
+  // users: any[] = [
+  //   {
+  //     id: 123456,
+  //     name: 'Jaime',
+  //     email: 'jaime@mail.com',
+  //     phone: 3001234567,
+  //     role: USER_ROLE.ADMIN,
+  //   },
+  // ];
 
-  getUsers(): User[] {
-    return this.users;
+  constructor(
+    @InjectRepository(User) private readonly userRepository: Repository<User>
+  ){}
+
+  async getUsers(): Promise<User[]> {
+    return await this.userRepository.find({relations:['permissions']});
   }
 
-  getUserById(id: string): User | null {
-    return this.users.find((user) => user.id == id);
+  async getUserById(id: number): Promise<User>{
+    const user:User = await this.userRepository.findOneBy({id});
+
+    if (!user) throw new NotFoundException('Resourse not found');
+    return user;
   }
 
-  createUser(data: CreateUserDto): User {
-    const tempUser: User = {
-      ...data,
-      id: idGenerator(),
-    };
-    console.log(tempUser);
-    this.users.push(tempUser);
-    return tempUser;
+  async createUser(data: CreateUserDto): Promise<User>{
+    const user: User =  this.userRepository.create(data)
+    return await this.userRepository.save(user);
   }
 
-  updateUser(id: string, data: CreateUserDto): User {
-    const user = this.users.find((user) => user.id === id);
-    const userIndex = this.users.findIndex((user) => user.id == id);
-    const userTemp = Object.assign(user, data);
-    this.users[userIndex] = userTemp;
-    return userTemp;
+  async updateUser(id: number, data: CreateUserDto): Promise<User> {
+    const existUser: User= await this.getUserById(id);
+    if (!existUser) throw new NotFoundException('Resourse not found');
+    const user: User = await this.userRepository.preload({
+      id,
+      ...data
+    });
+    return await this.userRepository.save(user);
   }
 
-  deleteUser(id: string): void {
-    const tempUsers = this.users.filter((user) => user.id !== id);
-    this.users = [...tempUsers];
+  async deleteUser(id: number): Promise<void> {
+    const user: User= await this.getUserById(id);
+    if (!user) throw new NotFoundException('Resourse not found');
+    this.userRepository.remove(user)
   }
 }

@@ -20,30 +20,24 @@ export class UserController {
   constructor(private _userService: UserService) {}
 
   @Get()
-  getUsers(): User[] {
+  getUsers(): Promise<User[]> {
     return this._userService.getUsers();
   }
 
   @Post()
-  addUser(@Body() body: CreateUserDto): User {
+  addUser(@Body() body: CreateUserDto): Promise<User> {
     return this._userService.createUser(body);
   }
 
   @Put('/:id')
   //@HttpCode(HttpStatus.NO_CONTENT)
-  updateUser(@Body() body: CreateUserDto, @Param('id') id: string): User {
-    const user = this._userService.getUserById(id);
-    if (!user) throw new BadRequestException('User not found');
-    //if(!user) throw new ForbiddenException('User not found');
+  updateUser(@Body() body: CreateUserDto, @Param('id') id: number): Promise<User> {
     return this._userService.updateUser(id, body);
   }
 
   @Delete('/:id')
-  deleteUser(@Param('id') id: string) {
-    const user = this._userService.getUserById(id);
-    if (!user) throw new BadRequestException('User not found');
-
-    this._userService.deleteUser(id);
+  async deleteUser(@Param('id') id: number):Promise<string> {
+    await this._userService.deleteUser(id);
     return 'Usuario eliminado';
   }
 }
