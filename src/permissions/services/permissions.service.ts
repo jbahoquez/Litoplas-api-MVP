@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreatePermissionDto } from './dto/create-permission.dto';
-import { UpdatePermissionDto } from './dto/update-permission.dto';
-import { Permission } from './entities/permission.entity';
+import { CreatePermissionDto } from '../dto/create-permission.dto';
+import { UpdatePermissionDto } from '../dto/update-permission.dto';
+import { Permission } from '../entities/permission.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 //import { Permission } from './entities/permission.entity'
@@ -19,7 +19,14 @@ export class PermissionsService {
   ){}
 
   async getPermissions():Promise<Permission[]>{
-    return await this.permissionRepository.find();
+    //return await this.permissionRepository.find();
+    const permissions: Permission[]=await this.permissionRepository
+    .createQueryBuilder('permission')
+    .leftJoinAndSelect('permission.userToPermission','userToPermission')
+    .leftJoinAndSelect('userToPermission.user','user')
+    .getMany()
+
+    return permissions
   }
   async getPermissionsById(id: number): Promise <Permission> | null {
     const permission:Permission = await this.permissionRepository.findOneBy({id});

@@ -55,9 +55,7 @@ SwaggerModule.setup('api/docs/v2', app, document2,{
   }
 });
 
-  const configService = app.get(ConfigService)
-  //console.log(configService.get('PORT'))
-  await app.listen(configService.get('PORT'));
+  await app.listen(process.env.PORT);
   console.log(`Application running on: ${await app.getUrl()}`)
 }
 bootstrap();

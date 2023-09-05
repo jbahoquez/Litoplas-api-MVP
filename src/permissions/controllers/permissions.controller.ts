@@ -1,8 +1,8 @@
 import { Controller, Get, Post, Body, Put, Param, Delete, BadRequestException } from '@nestjs/common';
-import { PermissionsService } from './permissions.service';
-import { CreatePermissionDto } from './dto/create-permission.dto';
-import { UpdatePermissionDto } from './dto/update-permission.dto';
-import { Permission } from './entities/permission.entity';
+import { PermissionsService } from '../services/permissions.service';
+import { CreatePermissionDto } from '../dto/create-permission.dto';
+import { UpdatePermissionDto } from '../dto/update-permission.dto';
+import { Permission } from '../entities/permission.entity';
 import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Permissions')
@@ -22,7 +22,7 @@ export class PermissionsController {
     return this.permissionsService.createPermission(body);
   }
 
-  @Put(':id')
+  @Put('/:id')
   updatePermission(@Param('id') id: number, @Body() body: UpdatePermissionDto) {
     return this.permissionsService.updatePermission(id, body);
   }

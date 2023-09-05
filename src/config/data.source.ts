@@ -9,10 +9,12 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 // DB_NAME=postgres
 
 ConfigModule.forRoot({
-    //envFilePath: `.${process.env.NODE_ENV}.env`
-    envFilePath: `.development.env`
+    envFilePath: `.${process.env.NODE_ENV}.env`
+    //envFilePath: `.development.env`
   })
 const configService=new ConfigService()
+console.log(`.${process.env.NODE_ENV}.env`)
+console.log(configService.get('DB_USER'))
 export const DataSourceConfig: DataSourceOptions={
     type:'postgres',
     host:configService.get('DB_HOST'),
