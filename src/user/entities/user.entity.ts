@@ -3,6 +3,7 @@ import { BaseEntity } from "../../config/base.entity";
 import { Column, Entity, JoinTable, ManyToMany, OneToMany,  } from "typeorm";
 import { UserPermissionEntity } from './user-permission.entity';
 import { IsNotEmpty } from "class-validator";
+import { Exclude } from "class-transformer";
 
 
 @Entity()
@@ -22,6 +23,7 @@ export class User extends BaseEntity implements IUser {
   @Column({nullable:false})
   role: USER_ROLE;
 
+  @Exclude()
   @IsNotEmpty()
   @Column({nullable:true})
   password: string

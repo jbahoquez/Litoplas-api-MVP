@@ -39,7 +39,7 @@ export class UserService {
     return users
   }
 
-  async getUserBy({key,value}:{key :keyof CreateUserDto, value: number | number}):Promise<IUser>{
+  async getUserBy({key,value}:{key :keyof CreateUserDto, value: string | number}):Promise<IUser>{
     const user: IUser = await this.userRepository.createQueryBuilder('user')
     .where({[key]:value})
     .getOne()
