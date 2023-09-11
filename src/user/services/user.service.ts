@@ -1,4 +1,4 @@
-import { Injectable,NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { User } from '../entities/user.entity';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { v4 as idGenerator } from 'uuid';
@@ -11,6 +11,7 @@ import { UserPermissionEntity } from '../entities/user-permission.entity';
 import { randomPasswordGenerations } from '../../utils/helper';
 import * as bcrypt from 'bcrypt'
 import { IUser } from '../../interfaces/user.interface';
+
 @Injectable()
 export class UserService {
   // users: any[] = [
@@ -25,7 +26,8 @@ export class UserService {
 
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
-    @InjectRepository(UserPermissionEntity) private readonly userPermissionRepository: Repository<UserPermissionEntity>
+    @InjectRepository(UserPermissionEntity) private readonly userPermissionRepository: Repository<UserPermissionEntity>,
+    
   ){}
 
   async getUsers(): Promise<User[]> {
@@ -81,6 +83,10 @@ export class UserService {
 
   //USER PERMISSION SECTION
   async createUserPermission(data: CreateUserPermissionDto): Promise<UserPermissionEntity>{
+    //console.log(data.user.id)
+    const  {user, permission} = data
+    const isUser = await this.getUserById(Number(user))
+    if(!isUser) throw new BadRequestException('Resource user not found');
     const userPermissionEntity: UserPermissionEntity =  this.userPermissionRepository.create(data)
     console.log(userPermissionEntity)
     return await this.userPermissionRepository.save(userPermissionEntity);

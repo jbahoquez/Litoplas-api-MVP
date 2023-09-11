@@ -21,6 +21,7 @@ export const DataSourceConfig: DataSourceOptions={
     port:configService.get('DB_PORT'),
     username:configService.get('DB_USER'),
     password:configService.get('DB_PASSWORD'),
+    // sid:ConfigService.get('DB_PASSWORD'),
     database:configService.get('DB_NAME'),
     entities: [__dirname + '/../**/**/*.entity{.ts,.js}'],
     migrations: [__dirname + '/../../migrations/*{.ts,.js}'],

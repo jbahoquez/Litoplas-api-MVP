@@ -4,6 +4,8 @@ import { UserService } from './services/user.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { UserPermissionEntity } from './entities/user-permission.entity';
+import { PermissionsModule } from '../permissions/permissions.module';
+import { PermissionsService } from '../permissions/services/permissions.service';
 
 @Module({
   controllers: [UserController],
