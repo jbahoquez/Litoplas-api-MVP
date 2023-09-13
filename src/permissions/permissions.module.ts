@@ -11,6 +11,6 @@ import { Permission } from './entities/permission.entity';
       Permission
     ])
   ],
-  exports:[]
+  exports:[PermissionsService, TypeOrmModule]
 })
 export class PermissionsModule {}

@@ -16,18 +16,19 @@ const configService=new ConfigService()
 console.log(`.${process.env.NODE_ENV}.env`)
 console.log(configService.get('DB_USER'))
 export const DataSourceConfig: DataSourceOptions={
-    type:'postgres',
+    type:'oracle',
     host:configService.get('DB_HOST'),
     port:configService.get('DB_PORT'),
     username:configService.get('DB_USER'),
     password:configService.get('DB_PASSWORD'),
-    // sid:ConfigService.get('DB_PASSWORD'),
+    sid:'PLAS',
     database:configService.get('DB_NAME'),
     entities: [__dirname + '/../**/**/*.entity{.ts,.js}'],
     migrations: [__dirname + '/../../migrations/*{.ts,.js}'],
     synchronize:false,
     migrationsRun: false,
-    namingStrategy: new SnakeNamingStrategy()
+    namingStrategy: new SnakeNamingStrategy(),
+    logging: true
 }
 
 export const AppDS = new DataSource(DataSourceConfig)

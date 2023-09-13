@@ -1,31 +1,33 @@
 import { IUser, USER_ROLE} from "../../interfaces/user.interface";
 import { BaseEntity } from "../../config/base.entity";
-import { Column, Entity, JoinTable, ManyToMany, OneToMany,  } from "typeorm";
+import { Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryColumn,  } from "typeorm";
 import { UserPermissionEntity } from './user-permission.entity';
 import { IsNotEmpty } from "class-validator";
 import { Exclude } from "class-transformer";
 
 
-@Entity()
+@Entity('USERS')
 export class User extends BaseEntity implements IUser {
   // @PrimaryGeneratedColumn('increment')
   // id: number;
 
-  @Column({nullable:false})
+  
+
+  @Column({nullable:false, type: 'varchar2', length: 200, name:'NAME'})
   name: string;
 
-  @Column({nullable:false,unique: true, type: 'varchar', length: 150 })
+  @Column({nullable:false,unique: true, type: 'varchar2', length: 150, name:'EMAIL' })
   email: string;
 
-  @Column({nullable:false})
+  @Column({nullable:false, type: 'varchar2', length: 100, name:'PHONE'})
   phone: string;
 
-  @Column({nullable:false})
+  @Column({nullable:false, type: 'number', name:'ROLE'})
   role: USER_ROLE;
 
   @Exclude()
   @IsNotEmpty()
-  @Column({nullable:true})
+  @Column({nullable:true, type: 'varchar2', length: 100, name:'PASSWORD'})
   password: string
 
   // @CreateDateColumn()

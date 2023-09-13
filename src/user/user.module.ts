@@ -9,13 +9,14 @@ import { PermissionsService } from '../permissions/services/permissions.service'
 
 @Module({
   controllers: [UserController],
-  providers: [UserService],
+  providers: [UserService, PermissionsService],
   imports:[
     TypeOrmModule.forFeature([
       User,
       UserPermissionEntity
-    ])
+    ]),
+    PermissionsModule
   ],
-  exports:[UserService, TypeOrmModule]
+  exports:[UserService, TypeOrmModule, PermissionsService]
 })
 export class UserModule {}

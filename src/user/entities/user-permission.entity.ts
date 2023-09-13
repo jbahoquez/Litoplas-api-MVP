@@ -4,9 +4,9 @@ import { User } from "./user.entity";
 import { Permission } from "../../permissions/entities/permission.entity";
 import { Column, Entity, ManyToOne } from "typeorm";
 
-@Entity('user_permission')
+@Entity('USER_PERMISSION')
 export class UserPermissionEntity extends BaseEntity{
-    @Column()
+    @Column({name:'ACCESS_LEVEL'})
     accessLevel: string;
     
     @ManyToOne(()=> User, (user)=>user.userToPermission)

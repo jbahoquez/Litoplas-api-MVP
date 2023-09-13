@@ -6,7 +6,7 @@ export enum USER_ROLE {
   }
 
 export interface IUser {
-    id:number;
+    id_d:number;
     name: string;
     email: string;
     phone: string;

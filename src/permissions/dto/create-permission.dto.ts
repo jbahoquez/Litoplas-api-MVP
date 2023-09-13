@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsBoolean } from 'class-validator';
+import { IsString, IsBoolean, IsNumber } from 'class-validator';
 
 export class CreatePermissionDto {
     @IsString()
@@ -8,7 +8,7 @@ export class CreatePermissionDto {
     @IsString()
     @ApiProperty()
     description: string;
-    @IsBoolean()
+    @IsNumber()
     @ApiProperty()
-    isActive: boolean;
+    isActive: number;
 }

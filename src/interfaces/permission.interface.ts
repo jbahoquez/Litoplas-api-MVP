@@ -1,6 +1,6 @@
 export interface IPermission {
-    id: number;
+    id_d: number;
     name: string;
     description: string;
-    isActive: boolean;
+    isActive: number;
 }

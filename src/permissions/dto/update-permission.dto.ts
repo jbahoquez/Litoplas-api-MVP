@@ -17,5 +17,5 @@ export class UpdatePermissionDto extends PartialType(CreatePermissionDto) {
     @IsBoolean()
     @IsOptional()
     @ApiProperty()
-    isActive: boolean;
+    isActive: number;
 }

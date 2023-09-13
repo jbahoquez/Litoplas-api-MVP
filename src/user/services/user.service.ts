@@ -11,6 +11,7 @@ import { UserPermissionEntity } from '../entities/user-permission.entity';
 import { randomPasswordGenerations } from '../../utils/helper';
 import * as bcrypt from 'bcrypt'
 import { IUser } from '../../interfaces/user.interface';
+import { PermissionsService } from 'src/permissions/services/permissions.service';
 
 @Injectable()
 export class UserService {
@@ -27,18 +28,19 @@ export class UserService {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     @InjectRepository(UserPermissionEntity) private readonly userPermissionRepository: Repository<UserPermissionEntity>,
-    
+    private readonly permissionsService: PermissionsService
   ){}
 
   async getUsers(): Promise<User[]> {
     //return await this.userRepository.find({relations:['userToPermission']});
-    const users:User[]=await this.userRepository
-    .createQueryBuilder('user')
-    .leftJoinAndSelect('user.userToPermission','userToPermission')
-    .leftJoinAndSelect('userToPermission.permission','permission')
-    .getMany();
-
+    const users:User[]=await this.userRepository.find()
+    //.createQueryBuilder('USER')
+    // .leftJoinAndSelect('user.userToPermission','userToPermission')
+    // .leftJoinAndSelect('userToPermission.permission','permission')
+    ;
+    //console.log(users.getSql())
     return users
+    
   }
 
   async getUserBy({key,value}:{key :keyof CreateUserDto, value: string | number}):Promise<IUser>{
@@ -49,7 +51,7 @@ export class UserService {
   }
 
   async getUserById(id: number): Promise<User>{
-    const user:User = await this.userRepository.findOneBy({id});
+    const user:User = await this.userRepository.findOneBy({id_d:id});
 
     if (!user) throw new NotFoundException('Resourse not found');
     return user;
@@ -60,8 +62,10 @@ export class UserService {
     const hashedPassword = await bcrypt.hash(randomPassword, Number(process.env.HASH_SALT));
 
     console.log(randomPassword, hashedPassword);
-    const user: User =  this.userRepository.create(data)
+    console.log(data)
+    const user=  this.userRepository.create(data)
     user.password=hashedPassword;
+    console.log(user)
     return await this.userRepository.save(user);
   }
 
@@ -69,7 +73,7 @@ export class UserService {
     const existUser: User= await this.getUserById(id);
     if (!existUser) throw new NotFoundException('Resourse not found');
     const user: User = await this.userRepository.preload({
-      id,
+      id_d:id,
       ...data
     });
     return await this.userRepository.save(user);
@@ -86,9 +90,8 @@ export class UserService {
     //console.log(data.user.id)
     const  {user, permission} = data
     const isUser = await this.getUserById(Number(user))
-    if(!isUser) throw new BadRequestException('Resource user not found');
+    const isPermissions = await this.permissionsService.getPermissionsById(Number(permission))
     const userPermissionEntity: UserPermissionEntity =  this.userPermissionRepository.create(data)
-    console.log(userPermissionEntity)
     return await this.userPermissionRepository.save(userPermissionEntity);
   }
 }
